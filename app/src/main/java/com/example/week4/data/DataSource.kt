@@ -15,7 +15,7 @@ class DataSource {
                 R.drawable.content_1,
                 true,
                 false,
-                50,
+                1,
                 "Caption 1. This is a long and detailed caption that spans multiple paragraphs. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac libero at purus scelerisque ultrices. Integer malesuada a justo eu facilisis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam vel nunc nec metus interdum efficitur. Nulla facilisi. Nulla rhoncus est et neque facilisis, vel venenatis quam blandit. Sed viverra justo at mi vestibulum eleifend. Vestibulum ut felis ut tortor tincidunt vehicula at id lacus. Donec feugiat dolor in metus congue, id vestibulum nulla posuere. Fusce a quam purus. Vivamus egestas et nisi in bibendum. Praesent id hendrerit ex. Nullam vel tortor nec neque pharetra congue.",
                 "2023-10-01"
             ),
@@ -218,24 +218,24 @@ class DataSource {
 
     public fun loadSuggestion(): List<Suggestion> {
         return listOf<Suggestion>(
-            Suggestion("lisa_anderson", "profile_9", true, false),
-            Suggestion("jane_smith", "profile_2", false, true),
-            Suggestion("elizabeth_martin", "profile_11", true, true),
-            Suggestion("olivia_lee", "profile_15", true, true),
-            Suggestion("david_williams", "profile_4", false, false),
-            Suggestion("emily_brown", "profile_5", true, false),
-            Suggestion("susan_jackson", "profile_7", true, true),
-            Suggestion("grace_martin", "profile_17", true, false),
-            Suggestion("robert_jones", "profile_8", false, false),
-            Suggestion("william_taylor", "profile_10", false, true),
-            Suggestion("natalie_rodriguez", "profile_13", true, false),
-            Suggestion("john_doe", "profile_1", true, false),
-            Suggestion("james_johnson", "profile_12", false, false),
-            Suggestion("alice_johnson", "profile_3", true, true),
-            Suggestion("peter_white", "profile_14", false, true),
-            Suggestion("thomas_wilson", "profile_16", false, false),
-            Suggestion("michael_davis", "profile_6", false, true),
-            Suggestion("jacob_hernandez", "profile_18", false, true)
+            Suggestion("lisa_anderson", R.drawable.profile_1, true, false),
+            Suggestion("jane_smith", R.drawable.profile_2, false, true),
+            Suggestion("elizabeth_martin", R.drawable.profile_3, true, true),
+            Suggestion("olivia_lee", R.drawable.profile_4, true, true),
+            Suggestion("david_williams", R.drawable.profile_5, false, false),
+            Suggestion("emily_brown", R.drawable.profile_6, true, false),
+            Suggestion("susan_jackson", R.drawable.profile_7, true, true),
+            Suggestion("grace_martin", R.drawable.profile_17, true, false),
+            Suggestion("robert_jones", R.drawable.profile_8, false, false),
+            Suggestion("william_taylor", R.drawable.profile_10, false, true),
+            Suggestion("natalie_rodriguez", R.drawable.profile_13, true, false),
+            Suggestion("john_doe", R.drawable.profile_12, true, false),
+            Suggestion("james_johnson",R.drawable.profile_3 , false, false),
+            Suggestion("alice_johnson", R.drawable.profile_14, true, true),
+            Suggestion("peter_white", R.drawable.profile_16, false, true),
+            Suggestion("thomas_wilson", R.drawable.profile_6, false, false),
+            Suggestion("michael_davis", R.drawable.profile_18, false, true),
+            Suggestion("jacob_hernandez", R.drawable.profile_14, false, true)
         )
     }
 

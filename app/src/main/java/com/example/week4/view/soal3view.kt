@@ -1,5 +1,6 @@
 package com.example.week4.view
 
+import android.content.Context
 import android.graphics.Paint.Align
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -26,6 +27,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,7 +39,10 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -71,9 +76,11 @@ import com.example.week4.model.Story
 import com.example.week4.model.Suggestion
 import com.example.week4.model.line_chat
 import com.example.week4.ui.theme.Week4Theme
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ListFeedView(
@@ -156,10 +163,26 @@ fun ListFeedView(
                         }
                     }
                 }
-                items(
-                    feedList
-                ) {
-                    InstagramPost(it)
+                var count = 5
+                for (feed in feedList) {
+                    if (count == 6) {
+                        item {
+                            LazyRow {
+                                items(suggestionList) {
+                                    Suggestion(it)
+                                }
+                            }
+                        }
+                        item {
+                            InstagramPost(feed = feed)
+                        }
+                        count = 0
+                    } else {
+                        item {
+                            InstagramPost(feed = feed)
+                        }
+                    }
+                    count++
                 }
             }
         }
@@ -168,7 +191,61 @@ fun ListFeedView(
 }
 
 @Composable
-fun InstagramPost(feed: Feed) { // change
+fun Suggestion(suggestion: Suggestion) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF191919)
+        ),
+        modifier = Modifier
+            .padding(horizontal = 6.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box {
+                Image(
+                    painter = painterResource(id = suggestion.pp),
+                    contentDescription = "Profile Picture",
+                    Modifier
+                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 12.dp)
+                        .size(120.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_close_24),
+                    contentDescription = "Close Icon",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(20.dp)
+                        .align(Alignment.TopEnd)
+                )
+            }
+            Text(
+                text = suggestion.name,
+                color = Color(0xFFEFEFEF),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Follow",
+                color = Color(0xFFEFEFEF),
+                modifier = Modifier
+                    .background(Color(0xFF0B98EB), RoundedCornerShape(16.dp))
+                    .padding(vertical = 10.dp, horizontal = 32.dp),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+fun InstagramPost(feed: Feed) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -212,6 +289,7 @@ fun InstagramPost(feed: Feed) { // change
         )
         val x: Boolean = feed.liked
         // Like, Comment, Share buttons
+        val context = LocalContext.current
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -223,59 +301,86 @@ fun InstagramPost(feed: Feed) { // change
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (x == true) { // change
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = null,
-                        tint = Color.Red,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    IconButton(onClick = {
+                        Toast.makeText(context, "Like Button", Toast.LENGTH_SHORT).show()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = Color.Red,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 } else {
-                    Icon(
-                        imageVector = Icons.Default.FavoriteBorder,
+                    IconButton(onClick = {
+                        Toast.makeText(context, "Like Button", Toast.LENGTH_SHORT).show()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.FavoriteBorder,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+
+                IconButton(onClick = {
+                    Toast.makeText(context, "Comment Button", Toast.LENGTH_SHORT).show()
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.comment),
                         contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier
+                            .size(24.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(20.dp))
+                Spacer(modifier = Modifier.width(4.dp))
 
-                Image(
-                    painter = painterResource(id = R.drawable.comment),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(20.dp))
-
-                Image(
-                    painter = painterResource(id = R.drawable.messanger),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                )
+                IconButton(onClick = {
+                    Toast.makeText(context, "Comment Button", Toast.LENGTH_SHORT).show()
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.messanger),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                }
             }
 
             val y = feed.saved
 
             if (y == true) {
-                Image(
-                    painter = painterResource(id = R.drawable.saved_light),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                )
+                IconButton(onClick = {
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.saved_light),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                }
             } else {
-                Image(
-                    painter = painterResource(id = R.drawable.save),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                )
+                IconButton(onClick = {
+                    Toast.makeText(context, "Save Button", Toast.LENGTH_SHORT).show()
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.save),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                }
             }
         }
 
         // Likes
-        if (x == true) {
+        val likeFormat = NumberFormat.getNumberInstance(Locale.US)
+        var likedFormat = likeFormat.format(feed.likes)
+        if (x && feed.likes > 1) {
+            likedFormat = likeFormat.format(feed.likes-1)
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = Color.White)) {
@@ -285,7 +390,7 @@ fun InstagramPost(feed: Feed) { // change
                         append(" and ")
                     }
                     withStyle(style = SpanStyle(color = Color.White)) {
-                        append("${feed.likes - 1} others") // change
+                        append("$likedFormat others") // change
                     }
                     withStyle(style = SpanStyle(color = Color.White)) {
                         append(" liked this post")
@@ -295,13 +400,24 @@ fun InstagramPost(feed: Feed) { // change
                 modifier = Modifier.padding(8.dp)
             )
         } else {
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.White)) {
-                        append("${feed.likes} Likes")
-                    }
-                }, modifier = Modifier.padding(8.dp)
-            )
+            if (feed.likes == 1 || feed.likes == 0) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color.White)) {
+                            append("${feed.likes} Like")
+                        }
+                    }, modifier = Modifier.padding(8.dp)
+                )
+            } else {
+                likedFormat = likeFormat.format(feed.likes)
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color.White)) {
+                            append("$likedFormat Likes")
+                        }
+                    }, modifier = Modifier.padding(8.dp)
+                )
+            }
         }
 
 
@@ -323,6 +439,7 @@ fun InstagramPost(feed: Feed) { // change
                 val monthAndDate = getMonthAndDateFromDate(z!!)
                 "${getMonthName(monthAndDate?.first)} ${monthAndDate?.second}, $year"
             }
+
             else -> "Invalid Date"
         }
 
@@ -446,7 +563,12 @@ fun StoryItem(story: Story) {
                     .padding(4.dp),
                 contentScale = ContentScale.Crop
             )
-
+            Image(
+                painter = painterResource(id = R.drawable.story),
+                contentDescription = "Border Story",
+                modifier = Modifier
+                    .size(400.dp)
+            )
         }
 
         Text(
