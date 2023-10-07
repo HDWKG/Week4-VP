@@ -68,6 +68,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.week4.R
 import com.example.week4.data.DataSource
 import com.example.week4.model.Explore
@@ -81,6 +82,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
 
 @Composable
 fun ListFeedView(
@@ -287,7 +289,8 @@ fun InstagramPost(feed: Feed) {
                 .height(300.dp),
             contentScale = ContentScale.Crop
         )
-        val x: Boolean = feed.liked
+        var x by remember { mutableStateOf(feed.liked) }
+        var likeCount by remember { mutableStateOf(feed.likes) }
         // Like, Comment, Share buttons
         val context = LocalContext.current
         Row(
@@ -300,9 +303,11 @@ fun InstagramPost(feed: Feed) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (x == true) { // change
+                if (x) { // change
                     IconButton(onClick = {
                         Toast.makeText(context, "Like Button", Toast.LENGTH_SHORT).show()
+                        x = false
+                        likeCount--
                     }) {
                         Icon(
                             imageVector = Icons.Default.Favorite,
@@ -314,6 +319,8 @@ fun InstagramPost(feed: Feed) {
                 } else {
                     IconButton(onClick = {
                         Toast.makeText(context, "Like Button", Toast.LENGTH_SHORT).show()
+                        x = true
+                        likeCount++
                     }) {
                         Icon(
                             imageVector = Icons.Default.FavoriteBorder,
@@ -349,11 +356,14 @@ fun InstagramPost(feed: Feed) {
                 }
             }
 
-            val y = feed.saved
+            var y by remember {
+                mutableStateOf(feed.saved)
+            }
 
-            if (y == true) {
+            if (y) {
                 IconButton(onClick = {
                     Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+                    y = false
                 }) {
                     Image(
                         painter = painterResource(id = R.drawable.saved_light),
@@ -365,6 +375,7 @@ fun InstagramPost(feed: Feed) {
             } else {
                 IconButton(onClick = {
                     Toast.makeText(context, "Save Button", Toast.LENGTH_SHORT).show()
+                    y = true
                 }) {
                     Image(
                         painter = painterResource(id = R.drawable.save),
@@ -380,7 +391,9 @@ fun InstagramPost(feed: Feed) {
         val likeFormat = NumberFormat.getNumberInstance(Locale.US)
         var likedFormat = likeFormat.format(feed.likes)
         if (x && feed.likes > 1) {
-            likedFormat = likeFormat.format(feed.likes-1)
+            val randomNumber = Random.nextInt(1, 4)
+            if(randomNumber == 1){
+                likedFormat = likeFormat.format(likeCount-1)
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = Color.White)) {
@@ -398,18 +411,28 @@ fun InstagramPost(feed: Feed) {
 
                 },
                 modifier = Modifier.padding(8.dp)
-            )
+            )} else{
+                likedFormat = likeFormat.format(likeCount)
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color.White)) {
+                            append("$likedFormat Likes")
+                        }
+                    },
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         } else {
             if (feed.likes == 1 || feed.likes == 0) {
                 Text(
                     text = buildAnnotatedString {
                         withStyle(style = SpanStyle(color = Color.White)) {
-                            append("${feed.likes} Like")
+                            append("${likeCount} Like")
                         }
                     }, modifier = Modifier.padding(8.dp)
                 )
             } else {
-                likedFormat = likeFormat.format(feed.likes)
+                likedFormat = likeFormat.format(likeCount)
                 Text(
                     text = buildAnnotatedString {
                         withStyle(style = SpanStyle(color = Color.White)) {
